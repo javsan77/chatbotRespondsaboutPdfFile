@@ -1,13 +1,14 @@
-#Libraries
-from langchain.document_loaders import PyPDFLoader
-from langchain.embeddings import HuggingFaceEmbeddings  # Modelo local, no requiere API
-from langchain.vectorstores import Chroma
-from langchain.llms import Ollama  # LLM local (ej: Llama 2)
+# Libraries
+# Update imports based on deprecation warnings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings # Modelo local, no requiere API
+from langchain_community.vectorstores import Chroma
+from langchain_community.llms import Ollama # LLM local (ej: Llama 2)
 from fastapi import FastAPI
 import uvicorn
 
 # 1. Cargar y vectorizar documentos (PDF)
-loader = PyPDFLoader("manual.pdf")  # Reemplaza con tu archivo
+loader = PyPDFLoader("manual.pdf") # Reemplaza con tu archivo
 documents = loader.load_and_split()
 
 # 2. Crear base de datos vectorial local (Chroma)
@@ -15,7 +16,7 @@ embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-
 vectorstore = Chroma.from_documents(documents, embeddings, persist_directory="./chroma_db")
 
 # 3. Inicializar LLM local (Ollama)
-llm = Ollama(model="llama2")  # Debes instalar Ollama primero (https://ollama.ai/)
+llm = Ollama(model="llama2") # Debes instalar Ollama primero (https://ollama.ai/)
 
 # 4. Crear API REST con FastAPI
 app = FastAPI()
@@ -29,5 +30,4 @@ def chat(query: str):
     return {"respuesta": respuesta}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)    
-
+    uvicorn.run(app, host="0.0.0.0", port=8000)
