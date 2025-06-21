@@ -1,9 +1,10 @@
 # Libraries
 # Update imports based on deprecation warnings
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.embeddings import HuggingFaceEmbeddings # Modelo local, no requiere API
+from langchain_huggingface import HuggingFaceEmbeddings # Modelo local, no requiere API
 from langchain_community.vectorstores import Chroma
-from langchain_community.llms import Ollama # LLM local (ej: Llama 2)
+# Corrected import for Ollama, using OllamaLLM as suggested by the warning
+from langchain_ollama import OllamaLLM # LLM local (ej: Llama 2)
 from fastapi import FastAPI
 import uvicorn
 
@@ -16,7 +17,8 @@ embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-
 vectorstore = Chroma.from_documents(documents, embeddings, persist_directory="./chroma_db")
 
 # 3. Inicializar LLM local (Ollama)
-llm = Ollama(model="llama2") # Debes instalar Ollama primero (https://ollama.ai/)
+# IMPORTANT: Also update the class name here from Ollama to OllamaLLM
+llm = OllamaLLM(model="llama2") # Debes instalar Ollama primero (https://ollama.ai/)
 
 # 4. Crear API REST con FastAPI
 app = FastAPI()
