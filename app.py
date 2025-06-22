@@ -37,8 +37,21 @@ app = FastAPI()
 def chat(query: str):
     # Buscar documentos similares
     docs = vectorstore.similarity_search(query, k=2)
-    # Generar respuesta con el LLM
-    respuesta = llm.invoke(f"Responde esta pregunta: {query}. Contexto: {docs[0].page_content}")
+
+    # Prepare the context (assuming docs[0].page_content is already relevant text)
+    context_text = docs[0].page_content
+    
+    # If the original PDF content (context_text) is in English, this might still be challenging
+    # for the model to entirely translate on the fly while generating a good answer.
+    prompt_spanish = (
+        f"Responde la siguiente pregunta en español, utilizando el siguiente contexto. "
+        f"Pregunta: {query}\n"
+        f"Contexto: {context_text}\n"
+        f"Respuesta en español:"
+    )
+
+        # Generar respuesta con el LLM
+    respuesta = llm.invoke(prompt_spanish) # Use the updated prompt
     return {"respuesta": respuesta}
 
 if __name__ == "__main__":
